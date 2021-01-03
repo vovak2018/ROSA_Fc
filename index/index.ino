@@ -20,7 +20,7 @@ StackArray <int> stack;
 StackArray <int> stack2;
 
 // Обьявляем регистры
-int ax, bx, cx, dx;
+int ax = 0, bx = 0, cx = 0, dx = 0;
 
 void error(String errorText) {
   log(errorText);
@@ -29,7 +29,12 @@ void error(String errorText) {
 
 void setup() {
   Serial.begin(9600);
+  /*
+  int* a = reg("ax");
+  *a = 10;
+   */
   log("\nИнициализация карты памяти...");
+  //log(String(*a));
   if (!card.init(SPI_HALF_SPEED, SD_ADAPTER_PIN))
   {
     error("MEMORY_CARD_ERROR");
@@ -51,7 +56,7 @@ void setup() {
   volumesize /= 2;
   log("Обнаруженный обьем (Mb):  ");
   volumesize /= 1024;
-  log(volumesize);
+  log((int)volumesize);
   if (SD.begin(SD_ADAPTER_PIN)) {
     log("Инициализация прошла успешно");
   }
