@@ -1,6 +1,10 @@
+#define AX 201
+#define BX 202
+#define CX 203
+#define DX 204
 #define SD_ADAPTER_PIN 10
 #define ROOT_CARD_MIN_SIZE 100
-#define ROOT_CARD_MAX_SIZE 20000
+#define ROOT_CARD_MAX_SIZE 16000
 
 #include <SPI.h>
 #include <SD.h>
@@ -10,24 +14,29 @@ Sd2Card card;
 SdVolume volume;
 File root;
 String buffer;
+
+// Обьявляем стеки
 StackArray <int> stack;
 StackArray <int> stack2;
 
+// Обьявляем регистры
+int ax, bx, cx, dx;
+
 void error(String errorText) {
-  Serial.println(errorText);
-  while (1);
+  log(errorText);
+  kill();
 }
 
 void setup() {
   Serial.begin(9600);
-  Serial.print("\nИнициализация карты памяти...");
+  log("\nИнициализация карты памяти...");
   if (!card.init(SPI_HALF_SPEED, SD_ADAPTER_PIN))
   {
     error("MEMORY_CARD_ERROR");
   }
   else
   {
-    Serial.println("Карта памяти обнаружена!");
+    log("Карта памяти обнаружена!");
   }
   if (!volume.init(card)) {
     error("CARD_INITIALIZATION_ERROR");
@@ -40,11 +49,11 @@ void setup() {
   volumesize = volume.blocksPerCluster();
   volumesize *= volume.clusterCount();
   volumesize /= 2;
-  Serial.print("Обнаруженный обьем (Mb):  ");
+  log("Обнаруженный обьем (Mb):  ");
   volumesize /= 1024;
-  Serial.println(volumesize);
+  log(volumesize);
   if (SD.begin(SD_ADAPTER_PIN)) {
-    Serial.println("Инициализация прошла успешно");
+    log("Инициализация прошла успешно");
   }
   else {
     error("Инициализация прошла не успешно");
@@ -52,25 +61,29 @@ void setup() {
   if (!SD.exists("system.dat"))
   {
     SD.open("system.dat", FILE_WRITE).close();
-    Serial.println("FREE_ROOT_FILE_ERROR");
+    log("FREE_ROOT_FILE_ERROR");
   }
   root = SD.open("system.dat", FILE_READ);
   if (!root.available() > 0) {  
-    Serial.println("FREE_ROOT_FILE_ERROR");
+    log("FREE_ROOT_FILE_ERROR");
   }
+}
+
+void execute() {
+  
 }
 
 void loop(void) {
   if (root.available() > 0)
   {
     buffer = root.readStringUntil('\n');
-    Serial.println(buffer);
+    log(buffer);
   }
   else
   {
-    Serial.println("EOF");
+    log("EOF");
     root.close();
-    Serial.println("STOP");
-    while (1);
+    log("STOP");
+    kill();
   }
 }
