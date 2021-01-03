@@ -29,13 +29,20 @@ void log(int s) {
 }
 
 int* reg(String s) {
-  if (s[1] == "x") {
-    if (s[0] == "a") {
+  if (s[1] == "X") {
+    if (s[0] == "A") {
       return &ax;
     }
   }
 }
 
 void kill() {
-  while (1);
+  log("STARTED_CONSOLE_MOD");
+  log("");
+  while (1) {
+    if (Serial.available()) {
+      buffer = Serial.readStringUntil("\n");
+      execute(buffer);
+    }
+  }
 }
