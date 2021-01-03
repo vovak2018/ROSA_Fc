@@ -24,16 +24,15 @@ void log(String s) {
   Serial.println(s);
 }
 
-void registr(char s[]) {
-  switch (stoi(s)) {
-    case AX:
-        return &ax;
-      break;
-    case BX:
-        return &bx;
-      break;
-    default:
-      error("REGISTR_NOT_FOUND");
+void log(int s) {
+  Serial.println(s);
+}
+
+int* reg(String s) {
+  if (s[1] == "x") {
+    if (s[0] == "a") {
+      return &ax;
+    }
   }
 }
 
