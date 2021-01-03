@@ -28,12 +28,12 @@ void error(String errorText) {
 }
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   /*
+  ax = 10;
   int* a = reg("ax");
-  *a = 10;
-   */
-  log("\nИнициализация карты памяти...");
+  */
+  log("Инициализация карты памяти...");
   //log(String(*a));
   if (!card.init(SPI_HALF_SPEED, SD_ADAPTER_PIN))
   {
@@ -72,17 +72,23 @@ void setup() {
   if (!root.available() > 0) {  
     log("FREE_ROOT_FILE_ERROR");
   }
+  log("");
 }
 
-void execute() {
-  
+void execute(String c) {
+  c.toUpperCase();
+  c.trim();
+  while (c.indexOf("  ") != -1) {
+    c.replace("  "," ");
+  }
+  log(c);
 }
 
 void loop(void) {
   if (root.available() > 0)
   {
     buffer = root.readStringUntil('\n');
-    log(buffer);
+    execute(buffer);
   }
   else
   {
